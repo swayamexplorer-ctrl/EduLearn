@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information, enrollment status, and personalized content",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "enrolledCourses": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of course IDs the user is enrolled in"
+        },
+        "progress": {
+          "type": "object",
+          "description": "Map of courseId to progress percentage",
+          "additionalProperties": { "type": "number" }
+        },
+        "playlists": {
+          "type": "object",
+          "description": "Map of courseId to an array of lesson indices saved by the user",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "number" }
+          }
+        },
+        "recentlyViewed": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of recently viewed course IDs"
+        }
+      },
+      "required": ["uid", "email"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Detailed course information and curriculum",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "instructor": { "type": "string" },
+        "description": { "type": "string" },
+        "level": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced"] },
+        "duration": { "type": "string" },
+        "thumbnail": { "type": "string" },
+        "introVideoUrl": { "type": "string" },
+        "outcomes": { "type": "array", "items": { "type": "string" } },
+        "prerequisites": { "type": "array", "items": { "type": "string" } },
+        "playlist": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "videoUrl": { "type": "string" },
+              "duration": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User documents stored by their UID"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Available courses"
+    }
+  }
+}

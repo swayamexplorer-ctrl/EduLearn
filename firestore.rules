@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (matches auth.uid)
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required)
+    //   - displayName: string (optional)
+    //   - photoURL: string (optional)
+    //   - enrolledCourses: list (optional)
+    //   - progress: map (optional)
+    //   - playlists: map (optional)
+    //   - recentlyViewed: list (optional)
+    //
+    // Collection: courses
+    // Document ID: {courseId}
+    // Fields:
+    //   - title: string
+    //   - instructor: string
+    //   - description: string
+    //   - level: string
+    //   - duration: string
+    //   - introVideoUrl: string
+    //   - outcomes: list
+    //   - prerequisites: list
+    //   - playlist: list
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string &&
+             data.email is string &&
+             (!('displayName' in data) || data.displayName is string) &&
+             (!('photoURL' in data) || data.photoURL is string) &&
+             (!('enrolledCourses' in data) || data.enrolledCourses is list) &&
+             (!('progress' in data) || data.progress is map) &&
+             (!('playlists' in data) || data.playlists is map) &&
+             (!('recentlyViewed' in data) || data.recentlyViewed is list);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /courses/{courseId} {
+      allow read: if true; // Courses are public
+      allow write: if false; // Only admins (manual) can write
+    }
+  }
+}

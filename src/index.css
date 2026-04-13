@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Poppins", sans-serif;
+  
+  --color-primary: #2563eb;
+  --color-accent: #f59e0b;
+  
+  --radius-4xl: 2rem;
+  --radius-5xl: 3rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans text-slate-900 bg-white antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 lg:py-32 max-w-7xl mx-auto px-6;
+  }
+  
+  .btn {
+    @apply inline-flex items-center justify-center font-bold transition-all duration-300 rounded-2xl cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/20;
+  }
+  
+  .btn-accent {
+    @apply bg-accent text-white hover:bg-orange-600 hover:shadow-xl hover:shadow-orange-500/20;
+  }
+  
+  .card {
+    @apply bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl hover:border-primary/10 transition-all duration-500;
+  }
+  
+  .input-field {
+    @apply w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all;
+  }
+}
+
+/* Custom Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.glass {
+  @apply bg-white/80 backdrop-blur-lg border border-white/20;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
